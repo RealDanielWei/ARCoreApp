@@ -1,6 +1,4 @@
-
-#ifndef ARCORE_APP_JNI_INTERFACE_H_
-#define ARCORE_APP_JNI_INTERFACE_H_
+#pragma once
 
 #include <jni.h>
 /**
@@ -16,4 +14,3 @@ JNIEnv *GetJniEnv();
 
 jclass FindClass(const char *classname);
 }  // extern "C"
-#endif

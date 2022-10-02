@@ -3,7 +3,7 @@
 #include <android/asset_manager_jni.h>
 #include <jni.h>
 
-#include "hello_ar_application.h"
+#include "arcoreapp.h"
 
 #define JNI_METHOD(return_type, method_name) \
   JNIEXPORT return_type JNICALL              \
@@ -15,12 +15,12 @@ namespace {
 // maintain a reference to the JVM so we can use it later.
 static JavaVM *g_vm = nullptr;
 
-inline jlong jptr(hello_ar::HelloArApplication *native_hello_ar_application) {
-  return reinterpret_cast<intptr_t>(native_hello_ar_application);
+inline jlong jptr(arcoreapp::ARCoreApp *arcoreapp) {
+  return reinterpret_cast<intptr_t>(arcoreapp);
 }
 
-inline hello_ar::HelloArApplication *native(jlong ptr) {
-  return reinterpret_cast<hello_ar::HelloArApplication *>(ptr);
+inline arcoreapp::ARCoreApp *native(jlong ptr) {
+  return reinterpret_cast<arcoreapp::ARCoreApp *>(ptr);
 }
 
 }  // namespace
@@ -33,7 +33,7 @@ jint JNI_OnLoad(JavaVM *vm, void *) {
 JNI_METHOD(jlong, createNativeApplication)
 (JNIEnv *env, jclass, jobject j_asset_manager) {
   AAssetManager *asset_manager = AAssetManager_fromJava(env, j_asset_manager);
-  return jptr(new hello_ar::HelloArApplication(asset_manager));
+  return jptr(new arcoreapp::ARCoreApp(asset_manager));
 }
 
 JNI_METHOD(jboolean, isDepthSupported)
@@ -42,9 +42,8 @@ JNI_METHOD(jboolean, isDepthSupported)
 }
 
 JNI_METHOD(void, onSettingsChange)
-(JNIEnv *, jclass, jlong native_application,
- jboolean is_instant_placement_enabled) {
-  native(native_application)->OnSettingsChange(is_instant_placement_enabled);
+(JNIEnv *, jclass, jlong native_application) {
+  native(native_application)->OnSettingsChange();
 }
 
 JNI_METHOD(void, destroyNativeApplication)
@@ -87,12 +86,6 @@ JNI_METHOD(void, onTouched)
   native(native_application)->OnTouched(x, y);
 }
 
-JNI_METHOD(jboolean, hasDetectedPlanes)
-(JNIEnv *, jclass, jlong native_application) {
-  return static_cast<jboolean>(
-      native(native_application)->HasDetectedPlanes() ? JNI_TRUE : JNI_FALSE);
-}
-
 JNIEnv *GetJniEnv() {
   JNIEnv *env;
   jint result = g_vm->AttachCurrentThread(&env, nullptr);
@@ -103,5 +96,4 @@ jclass FindClass(const char *classname) {
   JNIEnv *env = GetJniEnv();
   return env->FindClass(classname);
 }
-
 }  // extern "C"

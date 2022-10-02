@@ -13,7 +13,7 @@ import java.io.IOException;
 /** JNI interface to native layer. */
 public class JniInterface {
   static {
-    System.loadLibrary("hello_ar_native");
+    System.loadLibrary("arcoreapp_native");
   }
 
   private static final String TAG = "JniInterface";

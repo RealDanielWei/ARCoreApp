@@ -174,10 +174,7 @@ public class MainActivity extends AppCompatActivity
         viewportChanged = false;
       }
       Switch depthSwitch = findViewById(R.id.depth_switch);
-      JniInterface.onGlSurfaceDrawFrame(
-              nativeApplication,
-              depthSwitch.isChecked(),
-              false);
+      JniInterface.onGlSurfaceDrawFrame(nativeApplication, depthSwitch.isChecked(), false);
     }
   }
 

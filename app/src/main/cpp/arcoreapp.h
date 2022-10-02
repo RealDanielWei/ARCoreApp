@@ -1,21 +1,4 @@
-/*
- * Copyright 2017 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#ifndef C_ARCORE_HELLOE_AR_HELLO_AR_APPLICATION_H_
-#define C_ARCORE_HELLOE_AR_HELLO_AR_APPLICATION_H_
+#pragma once
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -30,20 +13,17 @@
 #include "arcore_c_api.h"
 #include "background_renderer.h"
 #include "glm.h"
-#include "obj_renderer.h"
-#include "plane_renderer.h"
-#include "point_cloud_renderer.h"
 #include "texture.h"
 #include "util.h"
 
-namespace hello_ar {
+namespace arcoreapp {
 
-// HelloArApplication handles all application logics.
-class HelloArApplication {
+// ARCoreApp handles all application logics.
+class ARCoreApp {
  public:
   // Constructor and deconstructor.
-  explicit HelloArApplication(AAssetManager* asset_manager);
-  ~HelloArApplication();
+  explicit ARCoreApp(AAssetManager* asset_manager);
+  ~ARCoreApp();
 
   // OnPause is called on the UI thread from the Activity's onPause method.
   void OnPause();
@@ -72,14 +52,10 @@ class HelloArApplication {
   // @param y: y position on the screen (pixels).
   void OnTouched(float x, float y);
 
-  // Returns true if any planes have been detected.  Used for hiding the
-  // "searching for planes" snackbar.
-  bool HasDetectedPlanes() const { return plane_count_ > 0; }
-
   // Returns true if depth is supported.
   bool IsDepthSupported();
 
-  void OnSettingsChange(bool is_instant_placement_enabled);
+  void OnSettingsChange();
 
  private:
   glm::mat3 GetTextureTransformMatrix(const ArSession* session,
@@ -88,35 +64,16 @@ class HelloArApplication {
   ArFrame* ar_frame_ = nullptr;
 
   bool install_requested_ = false;
-  bool calculate_uv_transform_ = false;
   int width_ = 1;
   int height_ = 1;
   int display_rotation_ = 0;
-  bool is_instant_placement_enabled_ = true;
 
   AAssetManager* const asset_manager_;
 
-  // The anchors at which we are drawing android models using given colors.
-  struct ColoredAnchor {
-    ArAnchor* anchor;
-    ArTrackable* trackable;
-    float color[4];
-  };
-
-  std::vector<ColoredAnchor> anchors_;
-
-  PointCloudRenderer point_cloud_renderer_;
   BackgroundRenderer background_renderer_;
-  PlaneRenderer plane_renderer_;
-  ObjRenderer andy_renderer_;
   Texture depth_texture_;
-
-  int32_t plane_count_ = 0;
 
   void ConfigureSession();
 
-  void UpdateAnchorColor(ColoredAnchor* colored_anchor);
 };
-}  // namespace hello_ar
-
-#endif  // C_ARCORE_HELLOE_AR_HELLO_AR_APPLICATION_H_
+}  // namespace arcoreapp
