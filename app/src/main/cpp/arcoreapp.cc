@@ -19,6 +19,8 @@
 #include <android/asset_manager.h>
 
 #include <array>
+#include <fstream>
+#include <filesystem>
 
 #include "arcore_c_api.h"
 #include "util.h"
@@ -128,6 +130,11 @@ void ARCoreApp::OnDrawFrame(bool depthColorVisualizationEnabled,
   ArCamera* ar_camera;
   ArFrame_acquireCamera(ar_session_, ar_frame_, &ar_camera);
 
+  auto expectedDumpFlag = bool{true};
+  if(dumpRequested.compare_exchange_strong(expectedDumpFlag, false)){
+      DumpData(ar_camera);
+  }
+
   glm::mat4 view_mat;
   glm::mat4 projection_mat;
   ArCamera_getViewMatrix(ar_session_, ar_camera, glm::value_ptr(view_mat));
@@ -185,6 +192,19 @@ void ARCoreApp::OnSettingsChange() {
 
 void ARCoreApp::OnTouched(float x, float y) {}
 
+void ARCoreApp::RequestToDumpData(){
+    dumpRequested.store(true);
+}
+
+void ARCoreApp::DumpData(const ArCamera* ar_camera){
+  if(!std::filesystem::is_directory("/data/data/com.danielwei.arcoreapp/dump")){
+    std::filesystem::create_directory("/data/data/com.danielwei.arcoreapp/dump");
+  }
+  auto file = std::ofstream("/data/data/com.danielwei.arcoreapp/dump/test.txt", std::ofstream::app);
+  file << "test" << std::endl;
+  file.close();
+}
+
 // This method returns a transformation matrix that when applied to screen space
 // uvs makes them match correctly with the quad texture coords used to render
 // the camera feed. It takes into account device orientation.
@@ -214,4 +234,4 @@ glm::mat3 ARCoreApp::GetTextureTransformMatrix(
 
   return glm::make_mat3(uvTransform);
 }
-}  // namespace hello_ar
+}  // namespace arcoreapp

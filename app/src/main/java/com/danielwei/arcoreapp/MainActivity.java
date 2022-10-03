@@ -40,10 +40,6 @@ public class MainActivity extends AppCompatActivity
 
   private SnackbarHelper snackbar;
 
-  private Uri selectedOutputPath;
-  private final ActivityResultLauncher<Uri> getSelectedOutputPath = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(),
-          uri -> selectedOutputPath = uri);
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -75,11 +71,8 @@ public class MainActivity extends AppCompatActivity
 
   /** Menu button to launch feature specific settings. */
   protected boolean settingsMenuClick(MenuItem item) {
-    if (item.getItemId() == R.id.select_output_path) {
-      getSelectedOutputPath.launch(Uri.EMPTY);
-      return true;
-    } else if (item.getItemId() == R.id.dump) {
-      tryDumpData(selectedOutputPath);
+    if (item.getItemId() == R.id.dump) {
+      tryDumpData();
       return true;
     }
     return false;
@@ -204,9 +197,7 @@ public class MainActivity extends AppCompatActivity
     viewportChanged = true;
   }
 
-  private void tryDumpData(Uri path){
-    if(path != Uri.EMPTY){
-      snackbar.showMessageWithDismiss(this, "Dumped data to " + path.getPath() + "\n");
-    }
+  private void tryDumpData(){
+    JniInterface.DumpData(nativeApplication);
   }
 }

@@ -10,6 +10,7 @@ def arcore_libpath = "${buildDir}/arcore-native"
 configurations { natives }
 
 android {
+    ndkVersion "25.1.8937393"
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.danielwei.arcoreapp"
@@ -23,7 +24,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++11", "-Wall"
+                cppFlags "-std=c++17", "-Wall"
                 arguments "-DANDROID_STL=c++_static",
                         "-DARCORE_LIBPATH=${arcore_libpath}/jni",
                         "-DARCORE_INCLUDE=${project.rootDir}/app/src/main/dep/libraries/include",

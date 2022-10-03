@@ -4,7 +4,7 @@
 #include <GLES2/gl2ext.h>
 #include <android/asset_manager.h>
 #include <jni.h>
-
+#include <atomic>
 #include <memory>
 #include <set>
 #include <string>
@@ -57,9 +57,13 @@ class ARCoreApp {
 
   void OnSettingsChange();
 
+  void RequestToDumpData();
+
  private:
   glm::mat3 GetTextureTransformMatrix(const ArSession* session,
                                       const ArFrame* frame);
+  void DumpData(const ArCamera* ar_camera);
+
   ArSession* ar_session_ = nullptr;
   ArFrame* ar_frame_ = nullptr;
 
@@ -67,6 +71,7 @@ class ARCoreApp {
   int width_ = 1;
   int height_ = 1;
   int display_rotation_ = 0;
+  std::atomic<bool> dumpRequested = {false};
 
   AAssetManager* const asset_manager_;
 

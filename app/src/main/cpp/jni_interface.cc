@@ -86,6 +86,11 @@ JNI_METHOD(void, onTouched)
   native(native_application)->OnTouched(x, y);
 }
 
+JNI_METHOD(void, DumpData)
+(JNIEnv *env, jclass, jlong native_application){
+    native(native_application)->RequestToDumpData();
+}
+
 JNIEnv *GetJniEnv() {
   JNIEnv *env;
   jint result = g_vm->AttachCurrentThread(&env, nullptr);

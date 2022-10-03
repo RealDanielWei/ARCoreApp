@@ -44,8 +44,7 @@ public class JniInterface {
   /** OnTouch event, called on the OpenGL thread. */
   public static native void onTouched(long nativeApplication, float x, float y);
 
-  /** Get plane count in current session. Used to disable the "searching for surfaces" snackbar. */
-  public static native boolean hasDetectedPlanes(long nativeApplication);
+  public static native void DumpData(long nativeApplication);
 
   public static native boolean isDepthSupported(long nativeApplication);
 
